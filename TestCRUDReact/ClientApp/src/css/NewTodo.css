@@ -1,0 +1,8 @@
+﻿.add-todo-container {
+    margin: 64px 0;
+    max-width: 200px;
+}
+
+button {
+    margin-bottom: 8px;
+}
