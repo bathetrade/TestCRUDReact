@@ -13,7 +13,7 @@ export class Todos extends Component {
             .then(data => this.setState({ todos: data }));
     }
 
-    static test(value) {
+    static createCheckbox(value) {
         if (value === true) {
             return (
                 <input type="checkbox" disabled checked />
@@ -38,7 +38,7 @@ export class Todos extends Component {
                 <tbody>
                     {todos.map(todo =>
                         <tr key={todo.id}>
-                            <td>{Todos.test(todo.isDone)}</td>
+                            <td>{Todos.createCheckbox(todo.isDone)}</td>
                             <td>{todo.text}</td>
                         </tr>
                     )}
