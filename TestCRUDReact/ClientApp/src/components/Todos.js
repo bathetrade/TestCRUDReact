@@ -44,7 +44,6 @@ export class Todos extends Component {
     handleAdd(todo) {
         let todos = this.state.todos.slice();
         todos = todos.concat(todo);
-        console.log(todos);
         this.setState({ todos: todos });
     }
 
