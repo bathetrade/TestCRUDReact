@@ -15,11 +15,21 @@ export class NewTodo extends Component {
             submitText: ""
             };
 
-        this.test = this.test.bind(this);
+        this.handleAdd = this.handleAdd.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
     }
 
-    test(event) {
+    static getIdFromUrl(urlString) {
+        var url = new URL(urlString);
+        var path = url.pathname;
+        var lastSegmentIndex = path.lastIndexOf('/');
+        if (lastSegmentIndex !== -1 && lastSegmentIndex !== path.length - 1) {
+            return path.slice(lastSegmentIndex + 1);
+        }
+        return null;
+    }
+
+    handleAdd(event) {
         event.preventDefault();
         fetch('/api/todo', {
             method: "POST",
@@ -28,8 +38,16 @@ export class NewTodo extends Component {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(this.state.todo)
-        });
-        this.setState({ submitted: true, submitText: this.state.text });
+        })
+            .then(response => {
+                if (response.status === 201) {
+                    let id = NewTodo.getIdFromUrl(response.headers.get("location"));
+                    let todo = { ...this.state.todo };
+                    todo.id = id;
+                    this.props.onAdd(todo);
+                    this.setState({ submitted: true, submitText: this.state.text });
+                }
+            })
     }
 
     handleNameChange(e) {
@@ -46,7 +64,7 @@ export class NewTodo extends Component {
         return (
             <div className="add-todo-container">
                 <h3>Add To-do</h3>
-                <form onSubmit={this.test}>
+                <form onSubmit={this.handleAdd}>
                     <div className="form-group">
                         <input className="form-control" type="text" value={this.state.text} placeholder="Name" onChange={this.handleNameChange} />
                     </div>

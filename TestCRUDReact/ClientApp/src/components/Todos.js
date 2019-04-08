@@ -7,6 +7,8 @@ export class Todos extends Component {
     constructor(props) {
         super(props);
         this.state = { todos: [] };
+        this.renderTodosTable = this.renderTodosTable.bind(this);
+        this.handleAdd = this.handleAdd.bind(this);
 
         fetch('/api/todo')
             .then(response => response.json())
@@ -26,7 +28,27 @@ export class Todos extends Component {
         }
     }
 
-    static renderTodosTable(todos) {
+    onDelete(id) {
+        fetch('/api/todo/' + id, {
+            method: "DELETE"
+        })
+            .then(response => {
+                if (response.ok === true) {
+                    const todos = this.state.todos.slice();
+                    var newTodos = todos.filter(todo => todo.id !== id);
+                    this.setState({ todos: newTodos });
+                }
+            });
+    }
+
+    handleAdd(todo) {
+        let todos = this.state.todos.slice();
+        todos = todos.concat(todo);
+        console.log(todos);
+        this.setState({ todos: todos });
+    }
+
+    renderTodosTable(todos) {
         return (
             <table className='table table-striped'>
                 <thead>
@@ -37,14 +59,14 @@ export class Todos extends Component {
                     </tr>
                 </thead>
                 <tbody>
-                    {todos.map(todo =>
+                    {this.state.todos.map(todo =>
                         <tr key={todo.id}>
                             <td>{Todos.createCheckbox(todo.isDone)}</td>
                             <td>{todo.text}</td>
                             <td>
                                 <div className="btn-group">
-                                    <button className="btn btn-outline-primary">Edit</button>
-                                    <button className="btn btn-outline-danger">Delete</button>
+                                    <button onClick={this.props.onEdit} className="btn btn-outline-primary">Edit</button>
+                                    <button onClick={() => this.onDelete(todo.id)} className="btn btn-outline-danger">Delete</button>
                                 </div>
                             </td>
                         </tr>
@@ -56,13 +78,13 @@ export class Todos extends Component {
 
     render() {
         let contents = this.state.todos.length > 0
-            ? Todos.renderTodosTable(this.state.todos)
+            ? this.renderTodosTable(this.state.todos)
             : "No todos.";
 
         return (
             <div>
                 <h1>Todos</h1>
-                <NewTodo />
+                <NewTodo onAdd={(todo) => this.handleAdd(todo)} />
                 {contents}
             </div>
         );
