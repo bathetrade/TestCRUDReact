@@ -33,6 +33,7 @@ export class Todos extends Component {
                     <tr>
                         <th>Completed</th>
                         <th>Name</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -40,6 +41,12 @@ export class Todos extends Component {
                         <tr key={todo.id}>
                             <td>{Todos.createCheckbox(todo.isDone)}</td>
                             <td>{todo.text}</td>
+                            <td>
+                                <div className="btn-group">
+                                    <button className="btn btn-outline-primary">Edit</button>
+                                    <button className="btn btn-outline-danger">Delete</button>
+                                </div>
+                            </td>
                         </tr>
                     )}
                 </tbody>
